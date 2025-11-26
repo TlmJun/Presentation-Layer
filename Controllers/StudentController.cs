@@ -5,9 +5,8 @@ using practice.Responses.Student;
 using TestingPlatform.Application.Dtos;
 using TestingPlatform.Application.Interfaces;
 using TestingPlatform.Domain.Enums;
-using TestingPlatform.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using TestingPlatform.Domain.Models;
+using TestingPlatform.Infrastructure.Db;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -29,6 +28,7 @@ public class StudentsController(IStudentRepository studentRepository, IUserRepos
         return Ok(mapper.Map<StudentResponse>(student));
     }
     [HttpPost]
+
     public async Task<IActionResult> CreateStudent([FromBody] CreateStudentRequest student)
     {
         var userDto = new UserDto()
@@ -41,6 +41,13 @@ public class StudentsController(IStudentRepository studentRepository, IUserRepos
             LastName = student.LastName,
             Role = UserRole.Student
         };
+        var user = mapper.Map<User>(userDto);
+
+        user.FirstName = userDto.FirstName;
+        user.LastName = userDto.LastName;
+        user.MiddleName = userDto.MiddleName;
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
+
         var userId = await userRepository.CreateAsync(userDto);
 
         var studentDto = new StudentDto()
