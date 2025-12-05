@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using practice.Requests.Student;
 using practice.Responses.Student;
@@ -9,6 +10,7 @@ using TestingPlatform.Domain.Models;
 using TestingPlatform.Infrastructure.Db;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class StudentsController(IStudentRepository studentRepository, IUserRepository userRepository, IMapper mapper) : ControllerBase
 {

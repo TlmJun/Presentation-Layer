@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using practice.Requests.Auth;
-using practice.Responses.Auth;
+using Presentation_Layer.Responses.Auth;
 using TestingPlatform.Application.Dtos;
 
 namespace practice.Mappings;

@@ -1,6 +1,6 @@
 ﻿using TestingPlatform.Domain.Enums;
 
-namespace practice.Responses.Auth;
+namespace Presentation_Layer.Responses.Auth;
 
 public class AuthResponse
 {

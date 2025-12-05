@@ -7,12 +7,25 @@ using TestingPlatform.Domain.Models;
 using practice.Responses.Test;
 using practice.Requests.Test;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace practice.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class TestController(ITestRepository testRepository, IMapper mapper) : ControllerBase
 {
+
+    [HttpGet("manage")]
+    [Authorize(Roles = "Manager")]
+    [ProducesResponseType(typeof(IEnumerable<TestResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetTestsForManager([FromQuery] bool? isPublic, [FromQuery] List<int> groupIds, [FromQuery] List<int> studentIds)
+    {
+        var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var tests = await testRepository.GetAllAsync(isPublic, groupIds, studentIds);
+
+        return Ok(mapper.Map<IEnumerable<TestResponse>>(tests));
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetTests()
