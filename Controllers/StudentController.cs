@@ -10,7 +10,7 @@ using TestingPlatform.Domain.Models;
 using TestingPlatform.Infrastructure.Db;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Student")]
 [Route("api/[controller]")]
 public class StudentsController(IStudentRepository studentRepository, IUserRepository userRepository, IMapper mapper) : ControllerBase
 {

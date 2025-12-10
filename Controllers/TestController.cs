@@ -9,9 +9,11 @@ using practice.Requests.Test;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using practice.Extensions;
 
 namespace practice.Controllers;
 [ApiController]
+[Authorize(Roles = "Manager")]
 [Route("api/[controller]")]
 public class TestController(ITestRepository testRepository, IMapper mapper) : ControllerBase
 {
@@ -23,6 +25,18 @@ public class TestController(ITestRepository testRepository, IMapper mapper) : Co
     {
         var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         var tests = await testRepository.GetAllAsync(isPublic, groupIds, studentIds);
+
+        return Ok(mapper.Map<IEnumerable<TestResponse>>(tests));
+    }
+
+    [HttpGet("available")]
+    [ProducesResponseType(typeof(IEnumerable<TestResponse>), StatusCodes.Status200OK)]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetTestsForStudent()
+    {
+        var studentId = HttpContext.TryGetUserId();
+
+        var tests = await testRepository.GetAllForStudent(studentId);
 
         return Ok(mapper.Map<IEnumerable<TestResponse>>(tests));
     }

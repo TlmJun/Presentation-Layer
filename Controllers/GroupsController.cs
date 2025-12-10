@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using practice.Requests.Group;
 using Presentation_Layer.Responses.Group;
@@ -8,6 +9,7 @@ using TestingPlatform.Application.Interfaces;
 namespace practice.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class GroupsController(IGroupRepository groupRepository, IMapper mapper) : ControllerBase
 {

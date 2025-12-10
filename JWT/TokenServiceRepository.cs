@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -22,12 +23,16 @@ public class TokenService : ITokenService
     public string CreateAccessToken(AuthResponse authResponse)
     {
         var claims = new List<Claim>
-       {
-           new Claim(ClaimTypes.NameIdentifier, authResponse.Id.ToString()),
-           new Claim(ClaimTypes.Name, authResponse.Login),
-           new Claim(ClaimTypes.Email, authResponse.Email ?? string.Empty),
-           new Claim(ClaimTypes.Role, authResponse.Role.ToString())
-       };
+   {
+       new Claim(ClaimTypes.NameIdentifier, authResponse.Id.ToString()),
+       new Claim(ClaimTypes.Name, authResponse.Login),
+       new Claim(ClaimTypes.Email, authResponse.Email ?? string.Empty),
+       new Claim(ClaimTypes.Role, authResponse.Role.ToString()),
+   };
+
+        //TODO: практика, добавили в клайм StudentId
+        if (authResponse.Student != null)
+            claims.Add(new Claim(TestingPlatformClaimTypes.StudentId, authResponse.Student.Id.ToString()));
 
         var credentials = new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha256);
         var expires = DateTime.UtcNow.AddMinutes(_settings.AccessTokenMinutes);
@@ -42,5 +47,19 @@ public class TokenService : ITokenService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+
+    public string CreateRefreshToken()
+    {
+        var random = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(random);
+        return Convert.ToBase64String(random);
+    }
+    public static class TestingPlatformClaimTypes
+    {
+        public const string StudentId = "StudentId";
+    }
+
 }
 

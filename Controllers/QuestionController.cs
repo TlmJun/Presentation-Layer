@@ -4,9 +4,11 @@ using TestingPlatform.Application.Dtos;
 using TestingPlatform.Application.Interfaces;
 using practice.Responses.Question;
 using practice.Requests.Question;
+using Microsoft.AspNetCore.Authorization;
 
 namespace practice.Controllers;
 [ApiController]
+[Authorize(Roles = "Manager")]
 [Route("api/[controller]")]
 public class QuestionController(IQuestionRepository questionRepository, IMapper mapper) : ControllerBase
 {
