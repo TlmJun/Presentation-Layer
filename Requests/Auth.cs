@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace practice.Requests.Auth;
+namespace Presentation_Layer.Resquests.Auth;
 
 public class AuthRequest
 {

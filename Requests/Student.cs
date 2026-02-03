@@ -39,3 +39,9 @@ public class CreateStudentRequest
     public string? VkProfileLink { get; set; }
 }
 
+public class UploadAvatarRequest
+{
+    public IFormFile Avatar { get; set; }
+}
+
+

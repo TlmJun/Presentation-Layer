@@ -9,5 +9,6 @@ public class StudentResponse
     public string? LastName { get; set; }
     public string? Phone { get; set; }
     public string? VkProfileLink { get; set; }
+    public string? AvatarPath { get; set; }
 }
 

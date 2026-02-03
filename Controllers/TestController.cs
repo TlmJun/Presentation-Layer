@@ -53,6 +53,12 @@ public class TestController(ITestRepository testRepository, IMapper mapper) : Co
         var id = await testRepository.GetByIdAsync(Id);
         return Ok(mapper.Map<IEnumerable<TestResponse>>(id));
     }
+    [HttpGet(("{studentId:int}"))]
+    public async Task<IActionResult> GetTestForStudentById(int Id)
+    {
+        var id = await testRepository.GetTestForStudentById(Id);
+        return Ok(mapper.Map<IEnumerable<TestResponse>>(id));
+    }
     [HttpPost]
     public async Task<IActionResult> CreateTest([FromBody] CreateTestRequest test)
     {

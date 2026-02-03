@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using practice.Extensions;
 using practice.Requests.Student;
 using practice.Responses.Student;
 using TestingPlatform.Application.Dtos;
@@ -10,7 +11,7 @@ using TestingPlatform.Domain.Models;
 using TestingPlatform.Infrastructure.Db;
 
 [ApiController]
-[Authorize(Roles = "Student")]
+[Authorize]
 [Route("api/[controller]")]
 public class StudentsController(IStudentRepository studentRepository, IUserRepository userRepository, IMapper mapper) : ControllerBase
 {
@@ -64,12 +65,50 @@ public class StudentsController(IStudentRepository studentRepository, IUserRepos
         return StatusCode(StatusCodes.Status201Created, new { Id = studentId });
 
     }
+    [HttpPost("avatar")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarRequest request)
+    {
+        var studentId = HttpContext.TryGetUserId();
+
+        var student = await studentRepository.GetByIdAsync(studentId);
+
+        if (request.Avatar.Length == 0)
+            return BadRequest("Файл не передан");
+
+        // Папка для аватаров
+        var avatarsFolder = Path.Combine("Uploads", "avatars");
+
+        if (!Directory.Exists(avatarsFolder))
+            Directory.CreateDirectory(avatarsFolder);
+
+        // Генерируем уникальное имя файла
+        var fileExtension = Path.GetExtension(request.Avatar.FileName);
+        var oldFileName = Path.GetFileNameWithoutExtension(request.Avatar.FileName);
+        var fileName = $"{oldFileName}_{Guid.NewGuid()}{fileExtension}";
+
+        var filePath = Path.Combine(avatarsFolder, fileName);
+
+        // Сохраняем файл
+        await using var stream = new FileStream(filePath, FileMode.Create);
+        await request.Avatar.CopyToAsync(stream);
+
+        student.AvatarPath = $"/uploads/avatars/{fileName}";
+
+        await studentRepository.UpdateAvatarAsync(student);
+
+        return Ok(new
+        {
+            avatarUrl = student.AvatarPath
+        });
+    }
+
     [HttpPut]
     public async Task<IActionResult> UpdateStudent([FromBody] UpdateStudentRequest student)
     {
         await studentRepository.UpdateAsync(mapper.Map<StudentDto>(student));
 
-        return NoContent();
+        return Ok("Студент изменен");
     }
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteStudent(int id)

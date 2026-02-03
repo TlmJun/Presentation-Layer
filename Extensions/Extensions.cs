@@ -1,5 +1,5 @@
 ﻿using System.Security.Authentication;
-using static practice.Services.TokenService;
+using practice.Constants;
 
 namespace practice.Extensions;
 
@@ -17,4 +17,3 @@ public static class HttpContextExtensions
         return studentId;
     }
 }
-

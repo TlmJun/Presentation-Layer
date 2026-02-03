@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using practice.Requests.Auth;
+using Presentation_Layer.Resquests.Auth;
 using Presentation_Layer.Responses.Auth;
 using TestingPlatform.Application.Dtos;
 

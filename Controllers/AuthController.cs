@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using practice.Requests.Auth;
-using practice.Responses.Student;
+using Presentation_Layer.Responses.Auth;
+using Presentation_Layer.Resquests.Auth;
 using practice.Services;
 using practice.Settings;
-using Presentation_Layer.Responses.Auth;
 using TestingPlatform.Application.Dtos;
 using TestingPlatform.Application.Interfaces;
+using practice.Responses.Student;
 using TestingPlatform.Infrastructure.Repositories;
 
 namespace practice.Controllers;
@@ -15,7 +15,7 @@ namespace practice.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-public class AuthController(IAuthRepository authRepository, ITokenService tokenService, IStudentRepository studentRepository, IRefreshTokenRepository refreshTokenRepository, IMapper mapper, IOptions<JwtSettings> options) : ControllerBase
+public class AuthController(IAuthRepository authRepository, ITokenService tokenService, IRefreshTokenRepository refreshTokenRepository, IMapper mapper, IOptions<JwtSettings> options, IStudentRepository studentRepository) : ControllerBase
 {
     private async Task GenerateAndSetRefreshTokenAsync(int userId)
     {
