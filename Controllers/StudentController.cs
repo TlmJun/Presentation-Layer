@@ -23,6 +23,9 @@ public class StudentsController(IStudentRepository studentRepository, IUserRepos
 
         return Ok(mapper.Map<IEnumerable<StudentResponse>>(students));
     }
+
+
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetStudentById(int id)
     {
@@ -30,6 +33,8 @@ public class StudentsController(IStudentRepository studentRepository, IUserRepos
 
         return Ok(mapper.Map<StudentResponse>(student));
     }
+
+
     [HttpPost]
 
     public async Task<IActionResult> CreateStudent([FromBody] CreateStudentRequest student)
@@ -65,6 +70,11 @@ public class StudentsController(IStudentRepository studentRepository, IUserRepos
         return StatusCode(StatusCodes.Status201Created, new { Id = studentId });
 
     }
+    /// <summary>
+    /// Загрузить аватар студента
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("avatar")]
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarRequest request)
